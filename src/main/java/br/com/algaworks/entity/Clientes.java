@@ -20,10 +20,9 @@ public class Clientes {
 	private String cnpj;
 	private String responsavel;
 	
-	public Clientes(Integer id, String razao, String cnpj, String responsavel) {
-		this.id = id;
+	public Clientes(String razao, String cnpj, String responsavel, double credito) {
 		this.razao = razao;
-		this.credito = 0;
+		this.credito = credito;
 		this.cnpj = cnpj;
 		this.responsavel = responsavel;
 	}
