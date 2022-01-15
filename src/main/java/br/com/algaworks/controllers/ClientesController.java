@@ -1,13 +1,15 @@
 package br.com.algaworks.controllers;
 
 import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,19 +22,29 @@ import br.com.algaworks.repository.ClientesRepository;
 @RestController
 @RequestMapping("/clientes")
 public class ClientesController {
-	
-	//private Clientes cliente01 = new Clientes(1,"ALGA WORKS","10214293000163","Yan");
-	//private Clientes cliente02 = new Clientes(2,"ALGA LOGISTICA","10214293000164","Gael");
+
 	
 	@Autowired
 	ClientesRepository clientesRepository;
+
 	
 	
 	@GetMapping
 	public List<Clientes> listarTodos(){
-			
 		List<Clientes> clientes = clientesRepository.findAll();
 		return clientes;
+	}
+	
+	
+	@GetMapping("/{clienteId}")
+	public ResponseEntity<Clientes> encontrarCliente(@PathVariable  Integer clienteId){
+		
+		var cliente = clientesRepository.findById(clienteId);
+		if(cliente.isPresent()) {
+			return ResponseEntity.ok(cliente.get());
+		}
+		
+		return ResponseEntity.notFound().build();
 	}
 	
 	@PostMapping
@@ -42,9 +54,39 @@ public class ClientesController {
 		clientesRepository.save(cliente);
 		URI uri = uriComponentsBuilder.path("/clientes/{id}").buildAndExpand(cliente.getId()).toUri();
 		return ResponseEntity.created(uri).body(cliente);
-				
-	
 	}
+	
+	@PutMapping("{clienteId}")
+	public ResponseEntity<Clientes> atualizarCliente(@PathVariable Integer clienteId, @RequestBody ClientesForm form){
+		
+		var cliente = clientesRepository.findById(clienteId);
+		
+		if(cliente.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		var clienteAtualizado = form.converterForm();
+		clienteAtualizado.setId(clienteId);
+		
+		clientesRepository.save(clienteAtualizado);
+		
+		return ResponseEntity.ok().body(clienteAtualizado);
+	}
+	
+	
+	
+	@DeleteMapping("{clienteId}")
+	public ResponseEntity<Void> apagarCliente(@PathVariable Integer clienteId){
+				
+		if(clientesRepository.findById(clienteId).isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		clientesRepository.deleteById(clienteId);
+		
+		return ResponseEntity.noContent().build();
+	}
+	
 }
 	
 

@@ -10,6 +10,6 @@ import br.com.algaworks.entity.Clientes;
 @Repository
 public interface ClientesRepository extends JpaRepository<Clientes, Integer>{
 
-	Optional<Clientes> findByCnpj(String cnpj);
+	Optional<Clientes> findById(Integer id);
 
 }
