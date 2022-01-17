@@ -12,4 +12,6 @@ public interface ClientesRepository extends JpaRepository<Clientes, Integer>{
 
 	Optional<Clientes> findById(Integer id);
 
+	Optional<Clientes> findByCnpj(String cnpj);
+
 }
