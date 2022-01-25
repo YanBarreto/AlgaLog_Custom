@@ -21,10 +21,11 @@ public class ClienteService {
 		
 		if(clienteDto.isEmpty()) {
 			clienteRepository.save(cliente);
+			System.out.println("O cliente portador do CNPJ " + cliente.getCnpj() + " foi salvo com sucesso.");
 			return cliente;
 		}
 		else if (cliente.equals(clienteDto.get())) {
-			System.out.println("Encontrou");
+			System.out.println("Atualizando cliente portador do CNPJ:" + cliente.getCnpj() );
 			cliente.setId(clienteDto.get().getId());
 			clienteRepository.save(cliente);
 			return cliente;
